@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 3 elements to &apos;DSLExample/src&apos;&#x0D;&#x0A;- Original project: &apos;parser&apos;&#x0D;&#x0A;- Destination element: &apos;DSLExample/src&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     OrderDsl.scala&#x0D;&#x0A;     AST.scala&#x0D;&#x0A;     testOrderDSL.scala&#x0D;&#x0A;- Update references to refactored element" description="Move files" destination="=DSLExample/src" element1="src/main/scala/DSLExample/OrderDsl.scala" element2="src/main/scala/DSLExample/AST.scala" element3="src/main/scala/DSLExample/testOrderDSL.scala" files="3" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1509397650521" units="0" version="1.0"/>
+</session>

@@ -1,0 +1,11 @@
+package msExecution;
+
+
+public class drawGraph {
+
+	public void test(){
+		Graph g = graph("example1").directed().with(node("a").link(node("b")));
+		Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
+
+	}
+}

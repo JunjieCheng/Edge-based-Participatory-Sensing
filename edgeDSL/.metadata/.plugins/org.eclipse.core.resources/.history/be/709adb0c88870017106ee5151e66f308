@@ -1,0 +1,16 @@
+package msExecution;
+
+import java.awt.Shape;
+
+import javax.swing.text.Style;
+
+import ch.qos.logback.core.pattern.parser.Node;
+
+public class drawGraph {
+
+	public void test(){
+		Graph g = graph("example1").directed().with(node("a").link(node("b")));
+		Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
+
+	}
+}

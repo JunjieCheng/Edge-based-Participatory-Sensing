@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="ch.qos.logback.core.pattern.parser.Node"/>
+<fullyQualifiedTypeName name="javax.jws.soap.SOAPBinding.Style"/>
+<fullyQualifiedTypeName name="javax.swing.text.Style"/>
+<fullyQualifiedTypeName name="java.awt.Shape"/>
+<fullyQualifiedTypeName name="info.leadinglight.jdot.Graph"/>
+<fullyQualifiedTypeName name="info.leadinglight.jdot.Node"/>
+<fullyQualifiedTypeName name="info.leadinglight.jdot.enums.Shape"/>
+<fullyQualifiedTypeName name="info.leadinglight.jdot.Edge"/>
+<fullyQualifiedTypeName name="java.util.concurrent.TimeUnit"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+</qualifiedTypeNameHistroy>

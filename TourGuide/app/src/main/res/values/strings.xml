@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tour Guide</string>
+    <string name="wifi">No WiFi Available</string>
+    <string name="query">Query</string>
+</resources>

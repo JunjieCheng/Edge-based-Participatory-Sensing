@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/parser/Hello.iml" filepath="$PROJECT_DIR$/parser/Hello.iml" />
+      <module fileurl="file://$PROJECT_DIR$/edgeDSL.iml" filepath="$PROJECT_DIR$/edgeDSL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microservices/faceDetection/faceDetection.iml" filepath="$PROJECT_DIR$/microservices/faceDetection/faceDetection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/executor/paraExecution.iml" filepath="$PROJECT_DIR$/executor/paraExecution.iml" />
+    </modules>
+  </component>
+</project>

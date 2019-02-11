@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;parser/src/main/scala/resources/detectPeople.serv&apos; to &apos;detectFaces.serv&apos;" description="Rename resource &apos;detectPeople.serv&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/scala/resources/detectPeople.serv" name="detectFaces.serv" stamp="1510845818104" updateReferences="true"/>
+</session>

@@ -1,0 +1,45 @@
+Service DigitRecognition {
+
+    global.expiration = "23:00:00 04/05/2018"
+    global.numberOfData = 10000
+    global.location = ["US.Virginia", "US.Washington.DC"]
+
+    MS: TakePhoto() with MobilePhone.TakePhoto {
+        select.system = "Android"
+        select.version = "4.4+"
+
+        set.instruction = "./README.xml"
+        set.title = "City Health"
+        set.reward = 0.5
+
+        on.success: return JPEG image
+    }
+
+    MS: RecognizePhoto(JPEG image) with MobilePhone.RecognizeDigit {
+        set.reward = 0.1
+
+        on.success: {
+            case ms.confident < 0.8: CheckLabel(JPEG image, String label)
+            case default: return JPEG image, String label
+        }
+    }
+
+    MS: CheckLabel(JPEG image, String label) with MobilePhone.EvaluatePhotoWithLabel {
+        select.system = "Android"
+        select.version = "4.4+"
+
+        set.instruction = "./README.xml"
+        set.title = "Check Recognition Result"
+        set.reward = 0.1
+
+        on.success: {
+            case ms.result == True: return JPEG image, String label
+            case default: TrainModel(JPEG image, String label)
+        }
+    }
+
+    MS: TrainModel(JPEG image, String label) with Device.TrainModel {
+        select.model = "DigitRecognition"
+        set.reward = 0.01
+    }
+}

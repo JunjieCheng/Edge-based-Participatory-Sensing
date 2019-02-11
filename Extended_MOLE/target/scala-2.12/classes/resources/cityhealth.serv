@@ -1,0 +1,44 @@
+Service CityHealth {
+
+    global.incentiveCost = 1000
+    global.numberOfData = 1000
+    global.expiration = "23:00:00 04/05/2018"
+    global.location = ["US.Virginia", "US.Washington.DC"]
+    global.rewardMechanism = "FixedPrice"
+
+    MS: TakePhoto(JPEG image, String tag) with MobilePhone.TakePhoto {
+        select.system = "Android"
+        select.version = "4.4+"
+
+        set.instruction = "./README.xml"
+        set.title = "City Health"
+        set.reward = 0.5
+
+        on.inSample.fail: exit
+    }
+
+    MS: TakePhoto1() with TakePhoto {
+        set.user.reputation = "30-69"
+        set.sampling = 0.3
+        on.success.inSample: EvaluatePhoto(JPEG image, String tag)
+        on.success.outSample: return JPEG image, String tag
+    }
+
+    MS: TakePhoto2() with TakePhoto {
+        select.user.reputation = "70+"
+        on.success: return JPEG image, String tag
+    }
+
+    MS: EvaluatePhoto(JPEG image, String tag) with MobilePhone.EvaluatePhotoWithTag {
+        select.system = "Android"
+        select.version = "4.4+"
+        select.device.differentAs = "TakePhoto"
+
+        set.instruction = "./README.xml"
+        set.title = "Evaluate City Health"
+        set.reward = 0.2
+
+        on.success: return JPEG image, String tag
+        on.fail: exit
+    }
+}

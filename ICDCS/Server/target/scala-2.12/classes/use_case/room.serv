@@ -1,0 +1,43 @@
+Service: {
+	task_name: "Room Availability Monitoring",
+	expiration: 2018-12-25 23:59:59,
+	budget: 5000,
+	location: "Virginia Tech",
+	synchronization: 600,
+	incentive: auction,
+	threshold: 1,
+
+    Microservices: {
+        SubmitSensingTarget: {
+            device: mobile_phone participant1,
+            instruction: "classroom.pdf",
+            show: room_number,
+            input: [room_number, space],
+            on_success: {
+                confirmed: TakePhoto,
+                refuted: error,
+            }
+        },
+        TakePhoto: {
+            device: mobile_phone participant1,
+            instruction: "classroom.pdf",
+            result: photo,
+            on_success: RecognizePhoto,
+        },
+        RecognizeAvailableSpace: {
+        	device: mobile_phone,
+        	result: recognized_space,
+        	on_success: {
+            	recognized_space != space: VerifyPhoto
+            }
+        },
+        VerifyPhoto: {
+        	device: mobile_phone,
+        	instruction: "verification.pdf",
+        	on_success: {
+        		confirmed: exit,
+        		refuted: error
+        	}
+        }
+    }
+}

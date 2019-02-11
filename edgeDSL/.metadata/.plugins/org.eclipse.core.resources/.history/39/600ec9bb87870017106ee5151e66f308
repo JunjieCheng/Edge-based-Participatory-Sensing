@@ -1,0 +1,29 @@
+package msExecution;
+
+import ch.qos.logback.core.pattern.parser.Node;
+
+public class drawGraph {
+
+	public void test(){
+		Node
+        init = node("init"),
+        execute = node("execute"),
+        compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
+        mkString = node("mkString").with(Label.of("make a\nstring")),
+        printf = node("printf");
+
+Graph g = graph("example2").directed().with(
+        node("main").with(Shape.RECTANGLE).link(
+                to(node("parse").link(execute)).with("weight", 8),
+                to(init).with(Style.DOTTED),
+                node("cleanup"),
+                to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
+        execute.link(
+                graph().with(mkString, printf),
+                to(compare).with(Color.RED)),
+        init.link(mkString));
+
+Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex2.png"));
+
+	}
+}

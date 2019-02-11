@@ -1,0 +1,78 @@
+package msExecution;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import msExecution.CFG.*;
+
+public class ExecutorThread implements Runnable{
+	CountDownLatch latchFromFather = null;
+	Node startNode = null;
+	Node currentNode = null;
+	CFG cfg = null;
+	int ParallelNodeID = 0;
+	
+    public ExecutorThread(CountDownLatch latchToCountDown, Node sNode, CFG controlFlowGraph, int ParaID) {
+        this.cfg = controlFlowGraph;
+        this.startNode = sNode;
+        this.latchFromFather = latchToCountDown;
+        this.ParallelNodeID = ParaID;
+    }
+    
+    public ExecutorThread(CountDownLatch latchToCountDown, Node sNode, CFG controlFlowGraph) {
+        this.cfg = controlFlowGraph;
+        this.startNode = sNode;
+        this.latchFromFather = latchToCountDown;
+        this.ParallelNodeID = 0;
+    }
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		currentNode = startNode;
+		while(true){
+			if(currentNode.nodeType.equals(CFG.NodeType_MS)){
+	    		MicroService ms = cfg.getMSbyMSID(currentNode.microServiceTaskID);
+	    		ms.execute(); // should we consider the maximal time of execution here....
+	    		currentNode = cfg.nextNode(currentNode, ms);
+			}
+			else if(currentNode.nodeType.equals(CFG.NodeType_END)){
+				break;
+			}
+			else if(currentNode.nodeType.equals(CFG.NodeType_PARA_START)){
+				ArrayList<Node> nodes = cfg.nextParallelNodes(currentNode);
+				int ParallelNodesSize = nodes.size();
+				CountDownLatch latch = new CountDownLatch(ParallelNodesSize);
+				for(int i=0;i<ParallelNodesSize;i++){
+					ExecutorThread newExecutor = new ExecutorThread(latch,nodes.get(i),cfg,currentNode.nodeID);
+					// need to pass some more information to the thread, paral start node information;
+					new Thread(newExecutor).start();
+					// need to add a thread to monitor the execution of child threads. 
+				}
+				// I am still the father thread;
+				// go to parallel end node; 
+		        try {
+		            latch.await();
+		            
+		        } catch (InterruptedException e) {
+		            e.printStackTrace();
+		        }
+				currentNode = cfg.findPeerNode(currentNode);
+			}
+			else if(currentNode.nodeType.equals(CFG.NodeType_PARA_END)){
+				if(currentNode.nodeID == ParallelNodeID){
+					// I am the child thread, I should finish execution. 
+					latchFromFather.countDown();
+					break;
+				}
+				else if(currentNode.nodeID != ParallelNodeID){
+					// I am the father thread, I should continue execution. 
+					currentNode = cfg.nextNode(currentNode, null);
+					// unconditional transfer. 
+					// TODO: need to transfer ms execution results as input data!!!! 
+				}
+			}
+		}
+		
+	}
+
+}

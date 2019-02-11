@@ -1,0 +1,88 @@
+package RQL
+import MobileServiceDSL._
+import scala.io.Source
+import RQL.graph._
+
+object testDSL {
+  val filename = System.getProperty("user.dir")+"/src/main/scala/resources/nearby_temperature.serv" 
+  val str = Source.fromFile(filename).getLines.mkString
+  
+  
+  //val str = """(100 IBM shares to buy at max 45, 40 Sun shares to sell at min 24,  25 CISCO shares to buy at max 56) for account "A1234" """"  
+  
+  //val Str1 = """ service get_nearby_temperature{Global_input $GPS; task1 get_sensor_temperature[]; task2 GPS_temperature[]}    """
+  
+  def main(args: Array[String]){
+    //println(str)
+    MobileService(new lexical.Scanner(str)) match {
+      case Success(service, _) => {
+        println("Processing Mobile Service"+service.ServiceID.ServiceID)    
+        var cfg = new MobileControlFlowGraph
+        var allMS = List[MSExecution]()
+        for(microservice<-service.details.microservices.lis){
+           var serviceID = microservice.identity
+           var seqNum = microservice.seqNum
+           var inputParamName = List[String]()
+           var deviceSelectionString:String = null
+           cfg.addNode(MicroServiceTask, seqNum) // add nodes as graph node. 
+           var deviceSelectionRuleString = ""
+           for(detail<-microservice.msDetails.details){
+              if(detail.MsType=="deviceSelection"){
+                 var deviceSelectionRules:MS_AST.DeviceDetail = detail.asInstanceOf[MS_AST.DeviceDetail]
+                 deviceSelectionString = deviceSelectionRules.parseRules;
+                 //here, we need to store the device selection SQL;
+              }
+              if(detail.MsType=="microservice input"){
+                 var msInput:MS_AST.InputDetail = detail.asInstanceOf[MS_AST.InputDetail]
+                 var param = msInput.ParameterName;
+                 inputParamName = param::inputParamName;
+              }
+           }
+           var ms = new MSExecution(seqNum,deviceSelectionRuleString, serviceID, inputParamName,deviceSelectionString)
+           allMS = ms::allMS;
+         }
+        
+        for(microservice<-service.details.microservices.lis){
+          var serviceID = microservice.identity
+          var seqNum = microservice.seqNum
+          for(detail<-microservice.msDetails.details){
+             if(detail.MsType=="On Condition"){
+                //do some correctness check here.
+                var msOutput:MS_AST.OnConditionDetail = detail.asInstanceOf[MS_AST.OnConditionDetail]
+                var responses = msOutput.rps.getRS();
+                if(responses.size>1){
+                  for (response <- responses if response!=responses.last){
+                     if(!response.ResponseType.equals("return value")){
+                     // error message: multiple response only for return;
+                      }
+                   }
+                }  
+                     // no matter if 1 response or more responses. 
+                if(responses.last.ResponseType.equals("exit")){
+                     var exit:MS_AST.ResponseExit = responses.last.asInstanceOf[MS_AST.ResponseExit] 
+                     println("exit status:"+exit.returnStatus)
+                        // add an edge in the graph to exit node. 
+                }else if(responses.last.ResponseType.equals("invoke")){
+                        // add invoke edge.
+                     var invoke:MS_AST.ResponseInvoke = responses.last.asInstanceOf[MS_AST.ResponseInvoke]
+                     cfg.addEdgeByMSID(seqNum,invoke.MsToInvoke,null) 
+                        // parse condition. 25
+                }else if(responses.last.ResponseType.equals("invoke rename")){
+                        // add invoke edge.
+                     var invoke:MS_AST.ResponseRenameInvoke = responses.last.asInstanceOf[MS_AST.ResponseRenameInvoke]
+                        //println(invoke.MsToInvoke)
+                     cfg.addEdgeByMSID(seqNum,invoke.MsToInvoke,null)
+                }else{
+                        // error message! 
+                    }
+               }
+             }
+       }
+       cfg.setMSNodeList(allMS) // add all nodes to ms node list
+     }
+     case Failure(msg, _) => println("Failure:"+msg)
+     case Error(msg, _) => println("Error"+msg)
+    }
+    
+  }
+}

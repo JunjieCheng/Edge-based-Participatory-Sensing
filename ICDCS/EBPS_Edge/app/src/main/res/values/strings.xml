@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">EBPS_Edge</string>
+    <string name="ebps_task_distributor">EBPS Task Distributor</string>
+    <string name="task_target">Task Target:</string>
+    <string name="task_name">Task Name</string>
+    <string name="submit">Submit</string>
+    <string name="task">Task</string>
+    <string name="microservice">Microservice</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="price">Price:</string>
+    <string name="execute">Execute</string>
+</resources>
